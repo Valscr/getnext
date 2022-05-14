@@ -6,7 +6,7 @@
 /*   By: vescaffr <vescaffr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 18:19:24 by vescaffr          #+#    #+#             */
-/*   Updated: 2022/05/14 06:43:28 by vescaffr         ###   ########.fr       */
+/*   Updated: 2022/05/14 17:21:35 by vescaffr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,14 @@ char	*get_next_line(int fd)
 		if (!dest)
                 	return (0);
 		a = read(fd, dest, 1000);
-		turn++;
 	}
+	turn++;
 	d = i;
 	while (dest[d] != '\n')
 		d++;
-	if ((d - i) > BUFFER_SIZE)
-		size = d - i;
-	else
-		size = BUFFER_SIZE;
+	size = d - i;
 	s = malloc(sizeof(char) * (size + 1));
-	while (j < size + 1) 
+	while (j < size) 
 	{
 		s[j++] = dest[i++];
 		if (i == a)
@@ -59,8 +56,17 @@ char	*get_next_line(int fd)
 			i = 0;
 			return (s);
 		}
+		if (j == BUFFER_SIZE && turn > 1)
+		{
+			i = 0;
+		}	
 	}
-	i++;
+	if (i > BUFFER_SIZE)
+		i = 0;
+	else
+		i++;
+	if (dest[i] == '\n')
+		i++;
 	s[j] = '\n';
 	s[++j] = '\0';
 	return (s);
