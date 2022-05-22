@@ -6,7 +6,7 @@
 /*   By: vescaffr <vescaffr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 18:19:24 by vescaffr          #+#    #+#             */
-/*   Updated: 2022/05/22 10:48:32 by vescaffr         ###   ########.fr       */
+/*   Updated: 2022/05/22 13:15:39 by vescaffr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,19 @@
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 10
-# endif 
+# endif
+
+size_t  ft_strlen(char *s)
+{
+        size_t  i;
+
+        i = 0;
+        if (!s)
+                return (0);
+        while (s[i] != '\0')
+                i++;
+        return (i);
+}
 
 char    *create_dest()
 {
@@ -32,18 +44,18 @@ char    *create_dest()
         return (s);
 }
 
-int     check_end(char *dest, int i)
+int     check_end(char *dest, int j)
 {
-        while (dest[i] != '\0')
+        while (dest[j] != '\0')
         {
-                if (dest[i] == '\n')
+                if (dest[j] == '\n')
                         return (0);
-                i++;
+                j++;
         }
         return (1);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	int		size;
 	int		i;
@@ -51,7 +63,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	int		j;
 
 	i = 0;
-	size = strlen(s1) + strlen(s2) + 1;
+	size = ft_strlen(s1) + ft_strlen(s2) + 1;
 	dest = malloc(sizeof(char) * size);
 	if (!dest)
 		return (0);
@@ -67,9 +79,30 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (dest);
 }
 
+char	*ft_cut_dest(char *dest, int f)
+{
+	char	*s;
+	int	j;
+	int	d;
+	int	size;
+	
+	d = 0;
+	j = f;
+	while (dest[f] != '\n' && dest[f] != '\0')
+		f++;
+	size = f - j + 1;
+	s = malloc(sizeof(char) * (size));
+	while (d < size)
+		s[d++] = dest[j++];
+	s[d] = '\0';
+	free(dest);
+	return (s);
+}
+
 char	*get_next_line(int fd)
 {
 	char	*dest;
+	char	*s;
 	static int	i;
 
         if (BUFFER_SIZE < 0 || fd < 0 || read(fd, &dest, 0) < 0)
@@ -80,16 +113,18 @@ char	*get_next_line(int fd)
         read(fd, dest, BUFFER_SIZE);
         while (check_end(dest, i))
         { 
-	       read(fd, dest, BUFFER_SIZE);
-		read(fd, new,
-               dest = ft_strjoin(dest, create_dest());
-		printf("deest = %s\n", dest);
+		s = create_dest();
+		if(read(fd, s, BUFFER_SIZE) == 0)
+		{
+			dest = ft_strjoin(dest, s);
+			free(s);
+			break;
+		}
+		dest = ft_strjoin(dest, s);
+		free(s);
 	}
-	while (dest[i] != '\n')
-	{
-		i++;
-	}
-	dest[++i] = '\0';         
+	dest = ft_cut_dest(dest, i);
+	i += ft_strlen(dest);
 	return (dest);
 }
 
@@ -115,6 +150,5 @@ int	main()
 	printf("%s", get_next_line(fd4));
 	printf("%s", get_next_line(fd5));
 	printf("%s", get_next_line(fd6));
-
 	return (0);
 }
