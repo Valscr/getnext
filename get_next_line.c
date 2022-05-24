@@ -6,7 +6,7 @@
 /*   By: valentin <valentin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 18:19:24 by vescaffr          #+#    #+#             */
-/*   Updated: 2022/05/25 01:49:52 by valentin         ###   ########.fr       */
+/*   Updated: 2022/05/25 01:53:57 by valentin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ int	check_end(char *dest)
 	int	j;
 
 	j = 0;
-	
 	if (!dest)
 		return (1);
 	while (dest[j] != '\0')
@@ -119,7 +118,6 @@ char	*new_s(char *dest)
 	free(dest);
 	return (str);
 }
-
 
 char	*get_next_line(int fd)
 {
