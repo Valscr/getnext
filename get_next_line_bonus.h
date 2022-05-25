@@ -3,28 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajordan- <ajordan-@student.42urduliz.com>  +#+  +:+       +#+        */
+/*   By: valentin <valentin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/01 13:25:45 by ajordan-          #+#    #+#             */
-/*   Updated: 2021/10/20 00:19:01 by ajordan-         ###   ########.fr       */
+/*   Created: 2022/05/14 02:04:30 by vescaffr          #+#    #+#             */
+/*   Updated: 2022/05/25 04:42:45 by valentin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_BONUS_H
 # define GET_NEXT_LINE_BONUS_H
 
+# include <stdio.h>
+# include <unistd.h>
 # include <stdlib.h>
+# include <fcntl.h>
+# include <string.h>
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1000
-# endif
-
-char	*get_next_line(int fd);
-char	*ft_read_to_left_str(int fd, char *left_str);
-char	*ft_strchr(char *s, int c);
 size_t	ft_strlen(char *s);
-char	*ft_strjoin(char *left_str, char *buff);
-char	*ft_get_line(char *left_str);
-char	*ft_new_left_str(char *left_str);
+int		check_end(char *dest);
+char	*ft_strjoin(char *s1, char *s2);
+char	*ft_cut_dest(char *dest);
+char	*new_save(char *dest);
+char	*get_next(char *save, int fd);
+char	*get_next_line(int fd);
 
 #endif

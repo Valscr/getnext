@@ -3,114 +3,80 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ajordan- <ajordan-@student.42urduliz.com>  +#+  +:+       +#+        */
+/*   By: valentin <valentin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/09/01 13:17:07 by ajordan-          #+#    #+#             */
-/*   Updated: 2021/10/20 10:04:39 by ajordan-         ###   ########.fr       */
+/*   Created: 2022/05/13 18:19:24 by vescaffr          #+#    #+#             */
+/*   Updated: 2022/05/25 03:30:48 by valentin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/* 
-*	GET_NEXT_LINE
-*	-------------
-*	DESCRIPTION
-*	This function takes an opened file descriptor and returns its next line.
-*	This function has undefined behavior when reading from a binary file.
-*	PARAMETERS
-*	#1. A file descriptor 
-*	RETURN VALUES
-*	If successful, get_next_line returns a string with the full line ending in
-*	a line break (`\n`) when there is one. 
-*	If an error occurs, or there's nothing more to read, it returns NULL.
-*	----------------------------------------------------------------------------
-*	AUXILIARY FUNCTIONS
-*	-------------------
-*	READ_TO_LEFT_STR
-*	-----------------
-*	DESCRIPTION
-*	Takes the opened file descriptor and saves on a "buff" variable what readed
-*	from it. Then joins it to the cumulative static variable for the persistence
-*	of the information.
-*	PARAMETERS
-*	#1. A file descriptor.
-*	#2. The pointer to the cumulative static variable from previous runs of
-*	get_next_line.
-*	RETURN VALUES
-*	The new static variable value with buffer joined for the persistence of the info,
-*	or NULL if error.
-*/
-
 #include "get_next_line_bonus.h"
-#include <unistd.h>
-//#include <stdio.h>
-//#include <fcntl.h>
 
-char	*ft_read_to_left_str(int fd, char *left_str)
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 10
+#endif
+
+char	*get_next(char *save, int fd)
 {
-	char	*buff;
-	int		rd_bytes;
+	int			bytes;
+	char		*dest;
 
-	buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!buff)
-		return (NULL);
-	rd_bytes = 1;
-	while (!ft_strchr(left_str, '\n') && rd_bytes != 0)
+	dest = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!dest)
+		return (0);
+	bytes = 1;
+	while (check_end(save) && bytes != 0)
 	{
-		rd_bytes = read(fd, buff, BUFFER_SIZE);
-		if (rd_bytes == -1)
+		bytes = read(fd, dest, BUFFER_SIZE);
+		if (bytes == -1)
 		{
-			free(buff);
+			free(dest);
 			return (NULL);
 		}
-		buff[rd_bytes] = '\0';
-		left_str = ft_strjoin(left_str, buff);
+		dest[bytes] = '\0';
+		save = ft_strjoin(save, dest);
 	}
-	free(buff);
-	return (left_str);
+	free(dest);
+	return (save);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*line;
-	static char	*left_str[4096];
+	static char		*save[4096];
+	char			*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (BUFFER_SIZE <= 0 || fd < 0)
 		return (0);
-	left_str[fd] = ft_read_to_left_str(fd, left_str[fd]);
-	if (!left_str[fd])
+	save[fd] = get_next(save[fd], fd);
+	if (save[fd] == NULL)
 		return (NULL);
-	line = ft_get_line(left_str[fd]);
-	left_str[fd] = ft_new_left_str(left_str[fd]);
+	line = ft_cut_dest(save[fd]);
+	save[fd] = new_save(save[fd]);
 	return (line);
 }
 
 /*int	main(void)
 {
-	char	*line;
-	int		i;
-	int		fd1;
-	int		fd2;
-	int		fd3;
+	int	fd1;
+	int	fd2;
+	int	fd3;
+	int	fd4;
+	int	fd5;
+	int	fd6;
 
-	fd1 = open("tests/test.txt", O_RDONLY);
-	fd2 = open("tests/test2.txt", O_RDONLY);
-	fd3 = open("tests/test3.txt", O_RDONLY);
-	i = 1;
-	while (i < 7)
-	{
-		line = get_next_line(fd1);
-		printf("line [%02d]: %s", i, line);
-		free(line);
-		line = get_next_line(fd2);
-		printf("line [%02d]: %s", i, line);
-		free(line);
-		line = get_next_line(fd3);
-		printf("line [%02d]: %s", i, line);
-		free(line);
-		i++;
-	}
-	close(fd1);
-	close(fd2);
-	close(fd3);
+	fd1 = open("test.txt", O_RDONLY);
+	fd2 = open("test.txt", O_RDONLY);
+	fd3 = open("test.txt", O_RDONLY);
+	fd4 = open("test.txt", O_RDONLY);
+	fd5 = open("test.txt", O_RDONLY);
+	fd6 = open("test.txt", O_RDONLY);
+
+	printf("fd = %d\n", fd1);
+	printf("%s", get_next_line(fd1));
+	printf("%s", get_next_line(fd2));
+	printf("%s", get_next_line(fd3));
+	printf("%s", get_next_line(fd4));
+	printf("%s", get_next_line(fd5));
+	printf("%s", get_next_line(fd6));
 	return (0);
 }*/

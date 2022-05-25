@@ -6,11 +6,15 @@
 /*   By: valentin <valentin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 18:19:24 by vescaffr          #+#    #+#             */
-/*   Updated: 2022/05/25 04:00:24 by valentin         ###   ########.fr       */
+/*   Updated: 2022/05/25 04:42:45 by valentin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 10
+#endif
 
 char	*get_next(char *save, int fd)
 {
