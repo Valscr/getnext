@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: valentin <valentin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 18:19:24 by vescaffr          #+#    #+#             */
-/*   Updated: 2022/05/25 02:33:46 by valentin         ###   ########.fr       */
+/*   Updated: 2022/05/25 02:27:43 by valentin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,18 +21,6 @@
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 10
 #endif
-
-size_t	ft_strlen(char *s)
-{
-	size_t	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i] != '\0')
-		i++;
-	return (i);
-}
 
 int	check_end(char *dest)
 {
@@ -134,7 +122,7 @@ char	*new_s(char *dest)
 char	*get_next_line(int fd)
 {
 	char			*dest;
-	static char		*save;
+	static char		*save[4096];
 	int				bytes;
 	char			*line;
 
@@ -144,7 +132,7 @@ char	*get_next_line(int fd)
 	if (!dest)
 		return (0);
 	bytes = 1;
-	while (check_end(save) && bytes != 0)
+	while (check_end(save[fd]) && bytes != 0)
 	{
 		bytes = read(fd, dest, BUFFER_SIZE);
 		if (bytes == -1)
@@ -153,10 +141,10 @@ char	*get_next_line(int fd)
 			return (NULL);
 		}
 		dest[bytes] = '\0';
-		save = ft_strjoin(save, dest);
+		save[fd] = ft_strjoin(save[fd], dest);
 	}
-	line = ft_cut_dest(save);
-	save = new_s(save);
+	line = ft_cut_dest(save[fd]);
+	save[fd] = new_s(save[fd]);
 	free(dest);
 	return (line);
 }
@@ -177,6 +165,7 @@ char	*get_next_line(int fd)
 	fd5 = open("test.txt", O_RDONLY);
 	fd6 = open("test.txt", O_RDONLY);
 
+	printf("fd = %d\n", fd1);
 	printf("%s", get_next_line(fd1));
 	printf("%s", get_next_line(fd2));
 	printf("%s", get_next_line(fd3));
