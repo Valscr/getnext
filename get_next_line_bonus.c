@@ -6,14 +6,14 @@
 /*   By: valentin <valentin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/13 18:19:24 by vescaffr          #+#    #+#             */
-/*   Updated: 2022/05/25 03:30:48 by valentin         ###   ########.fr       */
+/*   Updated: 2022/06/03 17:09:47 by valentin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 10
+# define BUFFER_SIZE 100
 #endif
 
 char	*get_next(char *save, int fd)
@@ -42,7 +42,7 @@ char	*get_next(char *save, int fd)
 
 char	*get_next_line(int fd)
 {
-	static char		*save[4096];
+	static char		*save[2048];
 	char			*line;
 
 	if (BUFFER_SIZE <= 0 || fd < 0)
